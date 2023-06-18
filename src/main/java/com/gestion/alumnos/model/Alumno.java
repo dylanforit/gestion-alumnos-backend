@@ -17,6 +17,7 @@ import javax.persistence.Table;
  * @author Dylanforit
  */
 
+
 @Entity
 @Table(name="alumno")
 public class Alumno  {

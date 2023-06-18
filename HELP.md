@@ -9,7 +9,7 @@ For further reference, please consider the following sections:
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.7.12/reference/htmlsingle/#data.sql.jpa-and-spring-data)
 * [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.7.12/reference/htmlsingle/#using.devtools)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.12/reference/htmlsingle/#web)
-
+ 
 ### Guides
 The following guides illustrate how to use some features concretely:
 

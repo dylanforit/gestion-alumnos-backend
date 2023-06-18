@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.gestion.alumnos.Controller;
+
+package com.gestion.alumnos.controller;
 
 /**
  *
@@ -28,9 +25,15 @@ import com.gestion.alumnos.exeptions.ResourceNotFoundException;
 import com.gestion.alumnos.model.Alumno;
 import com.gestion.alumnos.repository.AlumnoRepository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
+
+@Api(tags = "Alumnos API")
 @RestController
 @RequestMapping("/api/v1/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class AlumnoController {
 
 	@Autowired
@@ -50,6 +53,10 @@ public class AlumnoController {
 	}
     
 	//este metodo sirve para buscar un alumno
+    @ApiOperation(value = "Return all transaction bundled into Response", notes = "Return 204 if no data found")
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "There are not transactions"),
+        @ApiResponse(code = 500, message = "Internal error")})
 	@GetMapping("/alumnos/{id}")
 	public ResponseEntity<Alumno> obtenerAlumnoPorId(@PathVariable Long id){
 			Alumno alumno = repositorio.findById(id)

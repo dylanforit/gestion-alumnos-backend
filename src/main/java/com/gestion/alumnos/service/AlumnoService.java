@@ -1,5 +1,6 @@
 package com.gestion.alumnos.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,9 @@ public class AlumnoService {
 	public Optional<Alumno> findById(final long id) {
 		return alumnoRepository.findById(id);
 		
+	}
+
+	public List<Alumno> findAll() {
+		return alumnoRepository.findAll();
 	}
 }

@@ -37,6 +37,15 @@ pipeline {
 	            }
 	        }
 	    }
+	    stage ('OWASP Dependency-Check Vulnerabilities') {  
+		    steps {  
+		     withMaven(maven : 'mvn-3.6.3') {  
+		      sh 'mvn dependency-check:check'  
+		     }  
+		   
+		     dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'  
+		    }  
+		}  
         stage('Análisis estático - Sonar') {  // Etapa para realizar el análisis estático con SonarQube
             steps {
                 script {

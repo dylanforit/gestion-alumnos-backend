@@ -13,7 +13,7 @@ pipeline {
 	      }
 	    }
     
-        stage ('Inicialización') {
+        stage ('Definición de variables') {
             steps {
                 sh '''
                 echo "PATH = ${PATH}"
@@ -37,11 +37,16 @@ pipeline {
 	            }
 	        }
 	    }
-	    stage('Análisis estático - Sonar') {
-	        steps {
-	            sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.1.25:9000 -Dsonar.login=squ_ce1b0f3c6d5552b2e142e7fedcd233f7b86670cb'
-	        }
-	    }
+        stage('Análisis estático - Sonar') {  // Etapa para realizar el análisis estático con SonarQube
+            steps {
+                script {
+                    scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins
+                }
+                withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
+                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube
+                }
+            }
+        }
 	
 	    stage('Aprobación para despliegue') {
 	        steps {

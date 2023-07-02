@@ -39,9 +39,10 @@ pipeline {
 	    }
 	    stage ('OWASP Dependency-Check Vulnerabilities') {  
 		    steps {  
-		      sh 'mvn dependency-check:check'
-		   
-		     dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'  
+
+             dependencyCheck additionalArguments: '', odcInstallation: '5.0.0'		   
+
+		     dependencyCheckPublisher pattern: 'dependency-check-report.xml'  
 		    }  
 		}  
         stage('Análisis estático - Sonar') {  // Etapa para realizar el análisis estático con SonarQube

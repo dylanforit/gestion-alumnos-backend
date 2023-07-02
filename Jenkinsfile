@@ -24,7 +24,7 @@ pipeline {
 
 	    stage('Compilación - Maven') {
 	        steps {
-	            sh 'mvn clean compile'
+	            sh 'mvn clean package'
 	        }
 	    }
 	    stage('Test unitarios - Junit') {

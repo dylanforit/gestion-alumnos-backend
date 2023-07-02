@@ -115,7 +115,7 @@ class AlumnosApplicationTests {
 		final Alumno resultado = alumnoService.crearAlumno(alumnoMock);
 		Assertions.assertEquals(alumnoMock.getId(),resultado.getId());
 		Assertions.assertEquals(alumnoMock.getApellido(),resultado.getApellido());
-		Assertions.assertEquals(alumnoMock.getEmail(),alumno.getEmail());
+		Assertions.assertEquals(alumnoMock.getEmail(),resultado.getEmail());
 		Assertions.assertEquals(alumnoMock.getNombre(),resultado.getNombre());
 		Mockito.verify(alumnoRepository).save(alumnoMock);
 		

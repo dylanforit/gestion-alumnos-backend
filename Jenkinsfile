@@ -27,9 +27,7 @@ pipeline {
         }
 
 	    stage('Compilación - Maven') {
-	        environment {
-    			archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
-			}
+
 	        steps {
 	        
 	            sh 'mvn clean package'
@@ -37,8 +35,12 @@ pipeline {
 
 	            
 	        }
+	        environment {
+    			archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+			}
 	    }
 	    stage('Test unitarios - Junit') {
+	    
 	        steps {
 	            sh 'mvn test'
 	        }

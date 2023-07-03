@@ -25,6 +25,8 @@ pipeline {
 	    stage('Compilación - Maven') {
 	        steps {
 	            sh 'mvn clean package'
+	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado
+	            
 	        }
 	    }
 	    stage('Test unitarios - Junit') {

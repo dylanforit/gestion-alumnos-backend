@@ -1,71 +1,101 @@
 pipeline {
-agent any
-tools {
-maven 'Maven-3.8.8'
-jdk 'JDK-11.0.9'
-}
-stages {
-stage ('Inicialización') {
-steps {
-sh '''
-echo "PATH = ${PATH}"
-echo "M2_HOME = ${M2_HOME}"
-'''
-}
-}
-/*
-Se puede utilizar el siguiente código en caso de que
-se quiera realizar la descarga de código fuente del
-proyecto sin utilizar el plugin de github:
-stage ('Descarga codigo') {
-steps {
-git branch: 'master',
-credentialsId: 'github',
-url: 'git@github.com:loulirsal/directorio.git'
-}
-}
-*/
-stage('Compilación - Maven') {
-steps {
-sh 'mvn clean compile'
-}
-}
-stage('Test unitarios - Junit') {
-steps {
-sh 'mvn test'
-}
-post {
-success {
-junit 'target/surefire-reports/**/*.xml'
-}
-}
-}
-stage('Análisis estático - Sonar') {
-steps {
-sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.1.25:9000 -Dsonar.login=squ_0e011f98d3ab0552489ba3ba674fc625c4ff835d'
+    agent any
+    
+    environment {
+    archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+	}
+    tools {
+        maven 'Maven-3.8.8'
+        jdk 'JDK-11.0.9'
+    }
+    stages {
+	    stage('Inicio del Job') {
+	      steps {
+	        script {
+	          slackSend message: "El Job ha comenzado su ejecución  - ${env.JOB_NAME} - Ejecución ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", color: 'warning'
+	        }
+	      }
+	    }
+    
+        stage ('Definición de variables') {
+            steps {
+                sh '''
+                echo "PATH = ${PATH}"
+                echo "M2_HOME = ${M2_HOME}"
+                '''
+            }
+        }
 
-}
-}
-//stage('Generación war y subida - Artifactory') {
-//steps {
-//sh 'mvn --settings settings.xml deploy -Dmaven.test.skip'
-//}
-//}
-stage('Aprobación para despliegue') {
-steps {
-input "¿Se aprueba el despliegue?"
-}
-}
-//stage('Despliegue con Ansible') {
-//steps {
-//ansiColor('xterm') {
-//ansiblePlaybook(
-//playbook: 'playbook-directorio.yml',
-//inventory: '/etc/ansible/hosts',
-//credentialsId: 'ansible',
-//colorized: true)
-//}
-//}
-//}
-}
+	    stage('Compilación - Maven') {
+	        environment {
+    			archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+			}
+	        steps {
+	        
+	            sh 'mvn clean package'
+	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado
+
+	            
+	        }
+	    }
+	    stage('Test unitarios - Junit') {
+	        steps {
+	            sh 'mvn test'
+	        }
+	        post {
+	            success {
+	                junit 'target/surefire-reports/**/*.xml'
+	            }
+	        }
+	    }
+	    stage ('OWASP Dependency-Check Vulnerabilities') {  
+		    steps {  
+
+             dependencyCheck additionalArguments: '', odcInstallation: '5.0.0'		   
+
+		     dependencyCheckPublisher pattern: 'dependency-check-report.xml'  
+		    }  
+		}  
+        stage('Análisis estático - Sonar') {  // Etapa para realizar el análisis estático con SonarQube
+            steps {
+                script {
+                    scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins
+                }
+                withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
+                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube 
+                }
+            }
+        }
+	
+	    stage('Aprobación de entrega') {
+	        steps {
+	        	script {
+	        		slackSend(message: "Entrega pendiente de aprobación", color: 'Warning')
+	      		}
+	            input "¿Se aprueba la entrega?"
+	        }
+	    }
+
+    }
+      post {
+	    always {
+	      script {
+	        slackSend(message: "El Job ha finalizado", color: 'good')
+	      }
+	    }
+	
+	    success {
+	      script {
+            def buildURL = "${env.JOB_URL}${env.BUILD_NUMBER}/artifact/${archivo}"
+	            
+	        slackSend(message: "El Job se ha ejecutado exitosamente. Puedes descargar el compilado (<${buildURL}|Aquí>).", color: 'good')
+	      }
+	    }
+	
+	    failure {
+	      script {
+	        slackSend(message: "El Job ha fallado", color: 'danger')
+	      }
+	    }
+	  }
 }

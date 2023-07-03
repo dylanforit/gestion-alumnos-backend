@@ -67,7 +67,7 @@ pipeline {
             }
         }
 	
-	    stage('Aprobación para despliegue') {
+	    stage('Aprobación de entrega') {
 	        steps {
 	        	script {
 	        		slackSend(message: "Entrega pendiente de aprobación", color: 'Warning')

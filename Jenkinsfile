@@ -70,7 +70,7 @@ pipeline {
 	    stage('Aprobación para despliegue') {
 	        steps {
 	        	script {
-	        		slackSend(message: "Despliegue pendiente de aprobación", color: 'Warning')
+	        		slackSend(message: "Entrega pendiente de aprobación", color: 'Warning')
 	      		}
 	            input "¿Se aprueba la entrega?"
 	        }

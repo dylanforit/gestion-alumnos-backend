@@ -72,7 +72,7 @@ pipeline {
 	        	script {
 	        		slackSend(message: "Despliegue pendiente de aprobación", color: 'Warning')
 	      		}
-	            input "¿Se aprueba el despliegue?"
+	            input "¿Se aprueba la entrega?"
 	        }
 	    }
 

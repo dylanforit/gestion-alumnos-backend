@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    
+    environment {
+    archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+	}
     tools {
         maven 'Maven-3.8.8'
         jdk 'JDK-11.0.9'
@@ -23,9 +27,14 @@ pipeline {
         }
 
 	    stage('Compilación - Maven') {
+	        environment {
+    			archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+			}
 	        steps {
+	        
 	            sh 'mvn clean package'
 	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado
+
 	            
 	        }
 	    }
@@ -77,7 +86,9 @@ pipeline {
 	
 	    success {
 	      script {
-	        slackSend(message: "El Job se ha ejecutado exitosamente", color: 'good')
+            def buildURL = "${env.JOB_URL}${env.BUILD_NUMBER}/artifact/${archivo}"
+	            
+	        slackSend(message: "El Job se ha ejecutado exitosamente. Puedes descargar el compilado (<${buildURL}|Aquí>).", color: 'good')
 	      }
 	    }
 	

@@ -23,6 +23,10 @@ pipeline {
                 echo "PATH = ${PATH}"
                 echo "M2_HOME = ${M2_HOME}"
                 '''
+            	 script {
+                    def pomVersion = readMavenPom().getVersion()
+                    env.VERSION = pomVersion
+                }
             }
         }
 
@@ -64,7 +68,14 @@ pipeline {
                     scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins
                 }
                 withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
-                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube 
+                  // Ejecutar el escaneo con SonarQube 
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectVersion=${env.VERSION} \
+                        -Dsonar.property=${env.CUSTOM_PROPERTY} \
+                        -Dsonar.sources=src \
+                        -Dsonar.java.binaries=target/classes
+                    """  
                 }
             }
         }

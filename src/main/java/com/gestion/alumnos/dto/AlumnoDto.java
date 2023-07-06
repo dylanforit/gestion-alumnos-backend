@@ -53,8 +53,8 @@ public class AlumnoDto {
 		return nombre;
 	}
 
-	public void setNombre(String nombree) {
-		this.nombre = nombree;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public String getApellidos() {

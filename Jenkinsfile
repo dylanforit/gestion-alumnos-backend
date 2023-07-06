@@ -35,7 +35,7 @@ pipeline {
 	        steps {
 	        
 	            sh 'mvn clean package'
-	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado
+	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado 
 
 	            
 	        }

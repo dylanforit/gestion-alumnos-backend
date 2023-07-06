@@ -65,7 +65,7 @@ pipeline {
         stage('Análisis estático - Sonar') {  // Etapa para realizar el análisis estático con SonarQube
             steps {
                 script {
-                    scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins
+                    scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins 
                 }
                 withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
                   // Ejecutar el escaneo con SonarQube 

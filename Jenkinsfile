@@ -1,9 +1,6 @@
 pipeline {
     agent any
     
-    environment {
-    archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
-	}
     tools {
         maven 'Maven-3.8.8'
         jdk 'JDK-11.0.9'

@@ -83,9 +83,10 @@ pipeline {
 	
 	    success {
 	      script {
+	        def	archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
+	      
             def buildURL = "${env.JOB_URL}${env.BUILD_NUMBER}/artifact/${archivo}"
             
-	        def	archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
 	            
 	        slackSend(message: "El Job se ha ejecutado exitosamente. Puedes descargar el compilado (<${buildURL}|Aquí>).", color: 'good')
 	      }

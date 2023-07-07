@@ -59,7 +59,7 @@ pipeline {
                     scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins 
                 }
                 withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
-                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube 
+                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube  
                 }
             }
         }

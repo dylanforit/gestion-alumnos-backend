@@ -28,13 +28,11 @@ pipeline {
 	        steps {
 	        
 	            sh 'mvn clean package'
-	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado   
+	            archive 'target/gestion-alumnos-backend-*.jar'  // Archivar el archivo compilado  
 
 	            
 	        }
-	        environment {
-    			archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
-			}
+
 	    }
 	    stage('Test unitarios - Junit') {
 	    
@@ -61,7 +59,7 @@ pipeline {
                     scannerHome = tool 'Sonarqube Scanner IC'  // Utilizar la herramienta de SonarQube configurada en Jenkins 
                 }
                 withSonarQubeEnv('Sonarqube IC') {  // Configurar el entorno de SonarQube
-                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube   
+                    sh "${scannerHome}/bin/sonar-scanner"  // Ejecutar el escaneo con SonarQube 
                 }
             }
         }
@@ -86,6 +84,8 @@ pipeline {
 	    success {
 	      script {
             def buildURL = "${env.JOB_URL}${env.BUILD_NUMBER}/artifact/${archivo}"
+            
+	        def	archivo = sh(returnStdout: true, script: "find target -name 'gestion-alumnos-backend-*.jar'").trim()
 	            
 	        slackSend(message: "El Job se ha ejecutado exitosamente. Puedes descargar el compilado (<${buildURL}|Aquí>).", color: 'good')
 	      }
